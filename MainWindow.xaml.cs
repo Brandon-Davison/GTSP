@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace GTSP_2
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Graph graph = new Graph();
         private Canvas canvas;
 
         // Needed to move shapes around canvas
@@ -28,7 +30,7 @@ namespace GTSP_2
         private TranslateTransform originTT;
 
         // Maintains prev clicked Vertex for edge drawing
-        private Object prevClickedVertex;
+        private Vertex prevClickedVertex;
 
         /// <summary>
         /// Setup window and Canvas
@@ -53,19 +55,26 @@ namespace GTSP_2
         /// </summary>
         private void Window_OnMouseLeftClick(object sender, MouseButtonEventArgs e)
         {
+            Debug.WriteLine("SLSDLKFMSDFLKM");
             Point p = Mouse.GetPosition(canvas);
-            Object obj = FindVertexSpenningPoint(p);
+            Vertex clickedVertex = FindVertexSpanningPoint(p);
 
-            if (obj == null)
+            if (clickedVertex == null)
             {
-                // Place new Vertex; prevClicked = null; return;
+                Vertex vertex = new Vertex(CreateEllipse(), Mouse.GetPosition(canvas));
+                graph.AddVertex(vertex);
+                canvas.Children.Add(vertex.Drawable);
+                Canvas.SetLeft(vertex.Drawable, p.X - (vertex.Drawable.Width / 2));
+                Canvas.SetTop(vertex.Drawable, p.Y - (vertex.Drawable.Height / 2));
+                prevClickedVertex = null;
+                return;
             }
 
             if (prevClickedVertex != null)
             {
                 // Draw edge
             }
-            // prevClickedVertex = currVertex
+            prevClickedVertex = clickedVertex;
         }
 
         /// <summary>
@@ -116,9 +125,9 @@ namespace GTSP_2
             shape.Fill = (shape.Fill == Brushes.DarkBlue) ? Brushes.DarkOrange : Brushes.DarkBlue;
         }
 
-        private object FindVertexSpenningPoint(Point p)
+        private Vertex FindVertexSpanningPoint(Point p)
         {
-            return null;
+            return graph.Adj.Keys.FirstOrDefault(x => Point.Subtract(x.Position, p).Length <= x.Drawable.Width);
         }
 
         /// <summary>
@@ -139,11 +148,5 @@ namespace GTSP_2
 
             return ellipse;
         }
-
-        private void PlaceNewVertexOnCanvas()
-        {
-
-        }
-
     }
 }

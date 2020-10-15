@@ -11,7 +11,7 @@ namespace GTSP_2
     /// </summary>
     public class Graph
     {
-        private Dictionary<Vertex, LinkedList<KeyValuePair<Vertex, Edge>>> adj;
+        public Dictionary<Vertex, LinkedList<KeyValuePair<Vertex, Edge>>> Adj { get; }
 
         /// <summary>
         /// Creates new graph
@@ -19,7 +19,7 @@ namespace GTSP_2
         public Graph()
         {
             //adj = new Dictionary<Vertex, LinkedList<Vertex>>();
-            adj = new Dictionary<Vertex, LinkedList<KeyValuePair<Vertex, Edge>>>();
+            Adj = new Dictionary<Vertex, LinkedList<KeyValuePair<Vertex, Edge>>>();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace GTSP_2
         /// <param name="v">Vertex to add</param>
         public void AddVertex(Vertex v)
         {
-            adj[v] = new LinkedList<KeyValuePair<Vertex, Edge>>();
+            Adj[v] = new LinkedList<KeyValuePair<Vertex, Edge>>();
         }
 
         /// <summary>
@@ -39,8 +39,8 @@ namespace GTSP_2
         public void AddEdge(Vertex u, Vertex v)
         {
             Edge edge = new Edge(u, v);
-            adj[u].AddLast(new KeyValuePair<Vertex, Edge>(v, edge));
-            adj[v].AddLast(new KeyValuePair<Vertex, Edge>(u, edge));
+            Adj[u].AddLast(new KeyValuePair<Vertex, Edge>(v, edge));
+            Adj[v].AddLast(new KeyValuePair<Vertex, Edge>(u, edge));
         }
     }
 }

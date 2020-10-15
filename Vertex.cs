@@ -17,5 +17,11 @@ namespace GTSP_2
         {
             Drawable = ellipse;
         }
+
+        public Vertex(Ellipse ellipse, Point point)
+        {
+            Drawable = ellipse;
+            Position = point;
+        }
     }
 }

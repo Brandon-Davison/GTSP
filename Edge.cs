@@ -8,7 +8,7 @@ using System.Windows.Shapes;
 
 namespace GTSP_2
 {
-    class Edge
+    public class Edge
     {
         private Line Drawable { get; }
         Vertex source;
