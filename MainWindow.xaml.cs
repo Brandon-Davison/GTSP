@@ -22,6 +22,14 @@ namespace GTSP_2
     {
         private Canvas canvas;
 
+        // Needed to move shapes around canvas
+        protected bool isDragging = false;
+        private Point clickPosition;
+        private TranslateTransform originTT;
+
+        // Maintains prev clicked Vertex for edge drawing
+        private Object prevClickedVertex;
+
         /// <summary>
         /// Setup window and Canvas
         /// </summary>
@@ -45,7 +53,19 @@ namespace GTSP_2
         /// </summary>
         private void Window_OnMouseLeftClick(object sender, MouseButtonEventArgs e)
         {
+            Point p = Mouse.GetPosition(canvas);
+            Object obj = FindVertexSpenningPoint(p);
 
+            if (obj == null)
+            {
+                // Place new Vertex; prevClicked = null; return;
+            }
+
+            if (prevClickedVertex != null)
+            {
+                // Draw edge
+            }
+            // prevClickedVertex = currVertex
         }
 
         /// <summary>
@@ -53,7 +73,11 @@ namespace GTSP_2
         /// </summary>
         private void Canvas_OnEllipseLeftClick(object sender, MouseButtonEventArgs e)
         {
-            
+            var draggableControl = sender as Shape;
+            originTT = draggableControl.RenderTransform as TranslateTransform ?? new TranslateTransform();
+            isDragging = true;
+            clickPosition = e.GetPosition(this);
+            draggableControl.CaptureMouse();
         }
 
         /// <summary>
@@ -63,7 +87,14 @@ namespace GTSP_2
         /// <param name="e"></param>
         private void Canvas_OnEllipseIsBeingDragged(object sender, MouseEventArgs e)
         {
-
+            if (isDragging && sender is Shape draggableControl)
+            {
+                Point currentPosition = e.GetPosition(this);
+                var transform = draggableControl.RenderTransform as TranslateTransform ?? new TranslateTransform();
+                transform.X = originTT.X + (currentPosition.X - clickPosition.X);
+                transform.Y = originTT.Y + (currentPosition.Y - clickPosition.Y);
+                draggableControl.RenderTransform = new TranslateTransform(transform.X, transform.Y);
+            }
         }
 
         /// <summary>
@@ -71,15 +102,23 @@ namespace GTSP_2
         /// </summary>
         private void Canvas_OnEllipseLeftClickFinished(object sender, MouseButtonEventArgs e)
         {
-
+            isDragging = false;
+            var draggable = sender as Shape;
+            draggable.ReleaseMouseCapture();
         }
 
         /// <summary>
-        /// Colors vertex a new color on right click
+        /// Toggles vertexcolor on right click
         /// </summary>
         private void Canvas_OnEllipseRightClick(object sender, MouseEventArgs e)
         {
+            var shape = sender as Shape;
+            shape.Fill = (shape.Fill == Brushes.DarkBlue) ? Brushes.DarkOrange : Brushes.DarkBlue;
+        }
 
+        private object FindVertexSpenningPoint(Point p)
+        {
+            return null;
         }
 
         /// <summary>
@@ -99,6 +138,11 @@ namespace GTSP_2
             ellipse.MouseMove += Canvas_OnEllipseIsBeingDragged;
 
             return ellipse;
+        }
+
+        private void PlaceNewVertexOnCanvas()
+        {
+
         }
 
     }
