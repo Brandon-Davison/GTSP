@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Shapes;
 
@@ -22,6 +18,11 @@ namespace GTSP_2
         {
             Drawable = ellipse;
             Position = point;
+        }
+
+        public void Log()
+        {
+            Debug.WriteLine($"Coordinates: {0}", Position);
         }
     }
 }

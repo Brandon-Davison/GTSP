@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace GTSP_2
 {
@@ -12,14 +9,16 @@ namespace GTSP_2
     public class Graph
     {
         public Dictionary<Vertex, LinkedList<KeyValuePair<Vertex, Edge>>> Adj { get; }
+        private Canvas canvas;
 
         /// <summary>
         /// Creates new graph
         /// </summary>
-        public Graph()
+        public Graph(Canvas canvas)
         {
             //adj = new Dictionary<Vertex, LinkedList<Vertex>>();
             Adj = new Dictionary<Vertex, LinkedList<KeyValuePair<Vertex, Edge>>>();
+            this.canvas = canvas;
         }
 
         /// <summary>
@@ -38,9 +37,20 @@ namespace GTSP_2
         /// <param name="v">Vertex 2</param>
         public void AddEdge(Vertex u, Vertex v)
         {
-            Edge edge = new Edge(u, v);
+            Edge edge = new Edge(u, v, canvas);
             Adj[u].AddLast(new KeyValuePair<Vertex, Edge>(v, edge));
             Adj[v].AddLast(new KeyValuePair<Vertex, Edge>(u, edge));
+        }
+
+        /// <summary>
+        /// TODO: Add support for multiple edges
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public Edge GetConnectedEdges(Vertex v)
+        {
+            if (Adj[v].Count == 0) return null;
+            return Adj[v].First.Value.Value;
         }
     }
 }

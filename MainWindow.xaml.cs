@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace GTSP_2
@@ -21,7 +15,7 @@ namespace GTSP_2
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Graph graph = new Graph();
+        private Graph graph;
         private Canvas canvas;
 
         // Needed to move shapes around canvas
@@ -29,8 +23,14 @@ namespace GTSP_2
         private Point clickPosition;
         private TranslateTransform originTT;
 
+        // Maps shapes to vertices
+        private Dictionary<Shape, Vertex> shapeToVertex = new Dictionary<Shape, Vertex>();
+
         // Maintains prev clicked Vertex for edge drawing
         private Vertex prevClickedVertex;
+
+        // TESTING
+        Line line;
 
         /// <summary>
         /// Setup window and Canvas
@@ -44,8 +44,21 @@ namespace GTSP_2
                 Width = 400,
                 Height = 400
             };
+            graph = new Graph(canvas);
+
+
             this.Content = canvas;
             this.MouseLeftButtonDown += Window_OnMouseLeftClick;
+
+            line = new Line
+            {
+                Stroke = Brushes.AliceBlue,
+                X1 = 0,
+                Y1 = 100,
+                X2 = 200,
+                Y2 = 0
+            };
+            canvas.Children.Add(line);
         }
 
         /// <summary>
@@ -55,7 +68,6 @@ namespace GTSP_2
         /// </summary>
         private void Window_OnMouseLeftClick(object sender, MouseButtonEventArgs e)
         {
-            Debug.WriteLine("SLSDLKFMSDFLKM");
             Point p = Mouse.GetPosition(canvas);
             Vertex clickedVertex = FindVertexSpanningPoint(p);
 
@@ -63,6 +75,7 @@ namespace GTSP_2
             {
                 Vertex vertex = new Vertex(CreateEllipse(), Mouse.GetPosition(canvas));
                 graph.AddVertex(vertex);
+                shapeToVertex[vertex.Drawable] = vertex;
                 canvas.Children.Add(vertex.Drawable);
                 Canvas.SetLeft(vertex.Drawable, p.X - (vertex.Drawable.Width / 2));
                 Canvas.SetTop(vertex.Drawable, p.Y - (vertex.Drawable.Height / 2));
@@ -72,7 +85,7 @@ namespace GTSP_2
 
             if (prevClickedVertex != null)
             {
-                // Draw edge
+                graph.AddEdge(prevClickedVertex, clickedVertex);
             }
             prevClickedVertex = clickedVertex;
         }
@@ -114,6 +127,10 @@ namespace GTSP_2
             isDragging = false;
             var draggable = sender as Shape;
             draggable.ReleaseMouseCapture();
+
+            Vertex vertex = shapeToVertex[draggable];
+            Edge edge = graph.GetConnectedEdges(vertex);
+            vertex.Position = Mouse.GetPosition(canvas);
         }
 
         /// <summary>
