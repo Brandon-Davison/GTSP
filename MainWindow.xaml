@@ -6,4 +6,18 @@
         xmlns:local="clr-namespace:GTSP_2"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="600" Background="Black">
+    <Window.Resources>
+        <DataTemplate
+            DataType="{x:Type local:ConnectionViewModel}"
+            >
+            <Line
+                Stroke="Black"
+                StrokeThickness="1"
+                X1="{Binding Rect1.ConnectorHotspot.X}"
+                Y1="{Binding Rect1.ConnectorHotspot.Y}"
+                X2="{Binding Rect2.ConnectorHotspot.X}"
+                Y2="{Binding Rect2.ConnectorHotspot.Y}"
+                />
+        </DataTemplate>
+    </Window.Resources>
 </Window>
